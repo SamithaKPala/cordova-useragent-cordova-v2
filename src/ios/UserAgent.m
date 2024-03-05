@@ -16,11 +16,20 @@
 - (void)set: (CDVInvokedUrlCommand*)command
 {
     id newUserAgent = [command argumentAtIndex:0];
-    self.webView.customUserAgent = newUserAgent;
-    
+
+    // Check if the new user-agent is different from the current user-agent
+    if (![self.webView.customUserAgent isEqualToString:newUserAgent]) {
+        self.webView.customUserAgent = newUserAgent;
+
+        // Reload the web view
+        [self.webView reload];
+    }
+
     NSString* callbackId = command.callbackId;
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:newUserAgent];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+    
+    
 }
 
 - (void)reset: (CDVInvokedUrlCommand*)command
